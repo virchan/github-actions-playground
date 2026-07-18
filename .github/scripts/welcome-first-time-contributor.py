@@ -1,6 +1,6 @@
-"""Close PRs from first-time contributors that link to a not-ready issue.
+"""First-time Contributor Workflow
 
-Called from .github/workflows/close-first-time-non-ready-prs.yml.
+Called from .github/workflows/welcome-first-time-contributor.yml.
 """
 
 import json
@@ -64,13 +64,14 @@ def is_not_ready(issue):
     )
 
 
+gh = Github(GITHUB_TOKEN)
+repo = gh.get_repo(GITHUB_REPO)
+pr = repo.get_pull(PR_NUMBER)
+
 linked_issue = get_linked_issue(GITHUB_REPO, PR_NUMBER)
 
 if linked_issue and is_not_ready(linked_issue):
-    gh = Github(GITHUB_TOKEN)
-    repo = gh.get_repo(GITHUB_REPO)
-    pr = repo.get_pull(PR_NUMBER)
-
+    # Close the PR if the linked issue is not ready
     MESSAGE = (
         "Thank you for your interest in contributing to scikit-learn.\n\n"
         "The linked issue is still under discussion, and the maintainers have not "
@@ -89,3 +90,19 @@ if linked_issue and is_not_ready(linked_issue):
     print(f"Closing PR #{PR_NUMBER} with comment")
     pr.create_issue_comment(MESSAGE)
     pr.edit(state="closed")
+    pr.add_to_labels("autoclose")
+
+if pr.state == "open":
+    # Post welcome comment
+    MESSAGE = (
+        "Thank you for opening your first pull request to scikit-learn! 🎉 \n\n"
+        "To help get your contribution reviewed, please make sure that: \n\n"
+        "* You have filled out the [pull request template](https://github.com/scikit-learn/scikit-learn/blob/main/.github/PULL_REQUEST_TEMPLATE.md).\n\n"
+        "* The pull request addresses an existing issue that is ready for contribution (e.g. not tagged as 'Needs Triage', 'Needs Decision', ...).\n\n"
+        "  If you are proposing a new feature, please open an issue to discuss it first.\n\n"
+        "* There are no other open pull requests already targeting the same issue.\n\n"
+        "* You have followed the [pull request checklist](https://scikit-learn.org/stable/developers/contributing.html#pull-request-checklist). "
+        "In particular, linting and tests should pass."
+    )
+
+    pr.create_issue_comment(MESSAGE)
