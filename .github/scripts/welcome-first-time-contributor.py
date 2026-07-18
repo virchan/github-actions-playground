@@ -98,12 +98,18 @@ if pr.state == "open":
     MESSAGE = (
         "Thank you for opening your first pull request to scikit-learn! 🎉\n\n"
         "To help get your contribution reviewed, please make sure that:\n\n"
-        "* You have filled out the [pull request template](https://github.com/scikit-learn/scikit-learn/blob/main/.github/PULL_REQUEST_TEMPLATE.md).\n\n"
-        "* The pull request addresses an existing issue that is ready for contribution (e.g. not tagged as 'Needs Triage', 'Needs Decision', ...). "
-        "If you are proposing a new feature, please open an issue to discuss it first.\n\n"
+        "* You have filled out the "
+        "[pull request template]"
+        and "(https://github.com/scikit-learn/scikit-learn/blob/main/.github/PULL_REQUEST_TEMPLATE.md).\n\n"
+        "* The pull request addresses an existing issue that is ready for contribution "
+        and "(e.g. not tagged as 'Needs Triage', 'Needs Decision', ...). "
+        "If you are proposing a new feature, please open an issue to discuss it first."
+        "\n\n"
         "* There are no other open pull requests already targeting the same issue.\n\n"
-        "* You have followed the [pull request checklist](https://scikit-learn.org/stable/developers/contributing.html#pull-request-checklist). "
-        "In particular, linting and tests should pass."
+        "* You have followed the "
+        "[pull request checklist]"
+        "(https://scikit-learn.org/stable/developers/contributing.html#pull-request-checklist)."
+        " In particular, linting and tests should pass."
     )
 
     pr.create_issue_comment(MESSAGE)
