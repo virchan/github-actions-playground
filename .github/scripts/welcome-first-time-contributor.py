@@ -13,7 +13,11 @@ GITHUB_REPO = os.getenv("GITHUB_REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = int(os.getenv("PR_NUMBER"))
 
-CLOSING_ISSUE_QUERY = """
+def get_linked_issue(gh_repo, pr_number):
+    """Get the linked issue of the PR."""
+    owner, name = gh_repo.split("/")
+
+    CLOSING_ISSUE_QUERY = """
 query($owner: String!, $name: String!, $pr_number: Int!) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $pr_number) {
@@ -31,10 +35,6 @@ query($owner: String!, $name: String!, $pr_number: Int!) {
   }
 }
 """
-
-
-def get_linked_issue(gh_repo, pr_number):
-    owner, name = gh_repo.split("/")
     request = urllib.request.Request(
         "https://api.github.com/graphql",
         method="POST",
@@ -58,6 +58,7 @@ def get_linked_issue(gh_repo, pr_number):
 
 
 def is_not_ready(issue):
+    """Determine if an issue is still not ready for a PR."""
     return any(
         label["name"].startswith("Needs") or label["name"] == "RFC"
         for label in issue["labels"]["nodes"]
@@ -95,8 +96,8 @@ if linked_issue and is_not_ready(linked_issue):
 if pr.state == "open":
     # Post welcome comment
     MESSAGE = (
-        "Thank you for opening your first pull request to scikit-learn! 🎉 \n\n"
-        "To help get your contribution reviewed, please make sure that: \n\n"
+        "Thank you for opening your first pull request to scikit-learn! 🎉\n\n"
+        "To help get your contribution reviewed, please make sure that:\n\n"
         "* You have filled out the [pull request template](https://github.com/scikit-learn/scikit-learn/blob/main/.github/PULL_REQUEST_TEMPLATE.md).\n\n"
         "* The pull request addresses an existing issue that is ready for contribution (e.g. not tagged as 'Needs Triage', 'Needs Decision', ...). "
         "If you are proposing a new feature, please open an issue to discuss it first.\n\n"
