@@ -19,7 +19,7 @@ def get_labeled_last_time(pr, label):
     return labeled_time
 
 
-gh_repo = "scikit-learn/scikit-learn"
+gh_repo = os.getenv("GITHUB_REPO")
 github_token = os.getenv("GITHUB_TOKEN")
 
 gh = Github(github_token)
